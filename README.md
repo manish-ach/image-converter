@@ -1,8 +1,3 @@
-You're absolutely right — thanks for catching that! Here's a corrected version of the `README.md` with proper Markdown syntax, avoiding conflicting comment styles or formatting issues:
-
----
-
-```markdown
 # 🖼️ PHP Image Converter (via Rust FFI)
 
 This project demonstrates how to use **Rust** for high-performance image processing and expose it to **PHP** using **FFI (Foreign Function Interface)**.
@@ -126,6 +121,3 @@ Enter the output file name (no-extension):
 **Manish Acharya**  
 🌐 [www.manishacharya.name.np](https://www.manishacharya.name.np)  
 🔗 [GitHub](https://github.com/manish-ach) | [LinkedIn](https://linkedin.com/in/manish-acharya-08345a260)
-```
-
-Let me know if you want to include build badges, demo screenshots, or publish instructions for Packagist or crates.io.
