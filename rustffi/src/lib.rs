@@ -2,11 +2,12 @@ use image::ImageFormat;
 use std::ffi::CStr;
 use std::os::raw::{c_char, c_int};
 
+// Exporting the function with C linkage
 #[unsafe(no_mangle)]
 pub extern "C" fn convert_image(
     input_path: *const c_char,
     output_path: *const c_char,
-    format_code: *const c_int,
+    format_code: c_int,
 ) -> c_int {
     if input_path.is_null() || output_path.is_null() {
         return -1;
@@ -19,18 +20,13 @@ pub extern "C" fn convert_image(
         Ok(s) => s,
         Err(_) => return -2,
     };
+
     let output_str = match output_cstr.to_str() {
         Ok(s) => s,
         Err(_) => return -3,
     };
-    let format_code_val = unsafe {
-        if format_code.is_null() {
-            return -4;
-        }
-        *format_code
-    };
 
-    let format = match format_code_val {
+    let format = match format_code {
         0 => ImageFormat::Jpeg,
         1 => ImageFormat::Png,
         2 => ImageFormat::WebP,
