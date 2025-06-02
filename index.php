@@ -4,8 +4,26 @@ if (!extension_loaded("ffi")) {
     die("FFI extension is not loaded. Please enable it in php.ini\n");
 }
 
+// Get shared object extension according to the platform
+$ext = "";
+$os = PHP_OS_FAMILY;
+
+switch($os){
+case "Linux":
+	$ext = "so";
+		break;
+case "Windows":
+	$ext = "dll";
+		break;
+default:
+	$ext = "dylib";
+		break;
+}
+
+
+
 // Use absolute path for better reliability
-$lib_path = __DIR__ . "/lib/librust_image_converter.so";
+$lib_path = __DIR__ . "/lib/librust_image_converter.$ext";
 
 if (!file_exists($lib_path)) {
     die("Library file not found at: $lib_path\n");
