@@ -56,7 +56,7 @@ $output = $output_dir . $output_file_name . $extMap[$format_code];
 $result = $ffi->convert_image($input, $output, $format_code);
 
 if ($result === 0) {
-    echo "Image conversion successful\n";
+    echo "Image conversion successful, image in output dir\n";
 } else {
     echo "Conversion failed with error code: $result\n";
 }
