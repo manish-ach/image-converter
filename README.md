@@ -27,6 +27,13 @@ It supports converting images between **JPG**, **PNG**, and **WEBP** formats.
 - **PHP** ≥ 7.4 with FFI enabled
 - **Rust** & Cargo
 - `make` (Linux/macOS) or compatible on Windows
+- `fzf` – for interactive image selection
+
+📦 To install fzf:
+  - macOS (Homebrew): brew install fzf
+  - Arch Linux: pacman -S fzf
+  - Debian/Ubuntu: sudo apt install fzf
+  - others: [fzf_github](https://github.com/junegunn/fzf)
 
 ---
 
@@ -96,6 +103,7 @@ Enter the output file name (no-extension):
 - Rust performs the image processing using the [`image`](https://docs.rs/image/) crate.
 - The Rust function is exposed via `extern "C"` and compiled to a shared library.
 - PHP uses `FFI::cdef()` to bind the `convert_image` function and call it natively.
+- `fzf` enables interactive file selection within your home directory.
 
 ---
 
@@ -113,6 +121,7 @@ Enter the output file name (no-extension):
   Ensure:
   - Input file path is valid
   - `lib/librust_image_converter.*` exists after running `make`
+  - `fzf` is installed and available in your `$PATH`
 
 ---
 
