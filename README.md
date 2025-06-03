@@ -212,6 +212,7 @@ Choose (1-2): 2
 ```
 <details>
 <summary><strong>Planned Features</strong></summary>
+   
 ### 🤖 Batch Processing Mode
 
 ```bash
