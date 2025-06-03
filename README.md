@@ -163,7 +163,7 @@ php index.php --kitty-mode
 🖼️  Original Image Preview:
 ┌─────────────────────────────────────┐
 │  [IMAGE PREVIEW DISPLAYED HERE]     │
-│  📊 1920x1080 • JPEG • 2.4MB       │
+│  📊 1920x1080 • JPEG • 2.4MB        │
 └─────────────────────────────────────┘
 
 🔄 Converting to WEBP...
@@ -171,7 +171,7 @@ php index.php --kitty-mode
 ✅ Conversion Complete!
 ┌─────────────────────────────────────┐
 │  [CONVERTED IMAGE PREVIEW HERE]     │
-│  📊 1920x1080 • WEBP • 890KB       │
+│  📊 1920x1080 • WEBP • 890KB        │
 │  💾 Saved: ./output/image.webp      │
 └─────────────────────────────────────┘
 
