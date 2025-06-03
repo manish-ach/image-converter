@@ -210,7 +210,8 @@ Choose (1-2): 2
 ✅ Success! File saved to: ./output/vacation_compressed.webp
 📊 Original: 3.2MB → Converted: 1.1MB (65% smaller)
 ```
-
+<details>
+<summary><strong>Planned Features</strong></summary>
 ### 🤖 Batch Processing Mode
 
 ```bash
@@ -230,7 +231,7 @@ php index.php --resize 800x600 input.png output.jpg
 # Preserve metadata
 php index.php --keep-metadata input.jpg output.jpg
 ```
-
+</details>
 ---
 
 ## 🧠 How It Works
