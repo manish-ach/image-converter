@@ -231,8 +231,10 @@ php index.php --resize 800x600 input.png output.jpg
 # Preserve metadata
 php index.php --keep-metadata input.jpg output.jpg
 ```
-</details>
 ---
+
+</details>
+
 
 ## 🧠 How It Works
 
@@ -347,26 +349,6 @@ ls -la lib/  # Should show librust_image_converter.*
 - **Arch**: `sudo pacman -S fzf`
 - **Manual**: [GitHub releases](https://github.com/junegunn/fzf/releases)
 </details>
-
----
-
-## 🎛️ Configuration
-
-Create a `.env` file for custom settings:
-
-```bash
-# Default output directory
-OUTPUT_DIR=./converted_images
-
-# Default image quality (1-100)
-DEFAULT_QUALITY=85
-
-# Enable Kitty integration
-ENABLE_KITTY_PREVIEW=true
-
-# fzf options
-FZF_OPTIONS="--height 40% --reverse --border"
-```
 
 ---
 
