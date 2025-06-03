@@ -159,24 +159,18 @@ php index.php --kitty-mode
 
 ### 🖥️ Terminal Output Example
 
-```
-🖼️  Original Image Preview:
-┌─────────────────────────────────────┐
-│  [IMAGE PREVIEW DISPLAYED HERE]     │
-│  📊 1920x1080 • JPEG • 2.4MB        │
-└─────────────────────────────────────┘
+<details>
+   <summary><strong>ScreenShots</strong></summary>
+   
+   ![screenshot-1748934938](https://github.com/user-attachments/assets/e009f50d-9996-4ed7-8edf-556f6517bfbf)
+   
+   ![screenshot-1748934882](https://github.com/user-attachments/assets/d6a060b5-a195-4597-a6b7-680fd6aad447)
+   
+   ![screenshot-1748934916](https://github.com/user-attachments/assets/7a7d35ab-c75e-4595-8665-ab23110d5cb9)
 
-🔄 Converting to WEBP...
-
-✅ Conversion Complete!
-┌─────────────────────────────────────┐
-│  [CONVERTED IMAGE PREVIEW HERE]     │
-│  📊 1920x1080 • WEBP • 890KB        │
-│  💾 Saved: ./output/image.webp      │
-└─────────────────────────────────────┘
-
-📈 Compression: 63% size reduction!
-```
+   ![screenshot-1748934924](https://github.com/user-attachments/assets/53d2db06-2403-495f-aaa8-37a5c7c1c114)
+ 
+</details>
 
 ---
 
