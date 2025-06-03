@@ -113,8 +113,8 @@ Verify with: `php -i | grep -i ffi`
 
 ```bash
 # Clone the repository
-git clone <your-repo-url>
-cd php-image-converter
+git clone https://github.com/manish-ach/image-converter.git
+cd image-converter
 
 # Build everything
 make
