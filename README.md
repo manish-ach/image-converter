@@ -375,23 +375,6 @@ FZF_OPTIONS="--height 40% --reverse --border"
 
 ---
 
-## 🧪 Testing
-
-Run the test suite:
-
-```bash
-# Unit tests for Rust code
-cd rustffi && cargo test
-
-# Integration tests
-php tests/test_conversion.php
-
-# Performance benchmarks
-php tests/benchmark.php
-```
-
----
-
 ## 🤝 Contributing
 
 We welcome contributions! Here's how to get started:
@@ -425,6 +408,12 @@ We welcome contributions! Here's how to get started:
 *Building bridges between languages, one FFI call at a time* 🌉
 
 </div>
+
+---
+
+## 🙏 Special Thanks
+
+**Sameepkat** - For invaluable help and support throughout the development process
 
 ---
 
