@@ -1,25 +1,42 @@
 <?php
-
 function select_image_with_fzf(): ?string {
     $homeDir = getenv('HOME');
     $escapedHome = escapeshellarg($homeDir);
-
-    // Construct command carefully
     $cmd = "find $escapedHome "
          . "-path " . escapeshellarg("$homeDir/Library") . " -prune -o "
          . "-path " . escapeshellarg("$homeDir/.*") . " -prune -o "
          . "-type f \\( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \\) -print | fzf";
-
     $selected = shell_exec($cmd);
     if ($selected === null) {
         return null;
     }
     $selected = trim($selected);
-
     return $selected !== "" ? $selected : null;
 }
 
-// Check if FFI is available
+function get_kitty_format_flag(string $path): int {
+    $info = getimagesize($path);
+    $mime = $info['mime'] ?? '';
+    return match($mime) {
+        'image/webp' => 102,
+        'image/jpeg' => 101,
+        'image/png' => 100,
+        default => 100, // default to PNG
+    };
+}
+
+function display_image_in_kitty(string $path): void {
+    if (!file_exists($path)) {
+        echo "Error: Output file does not exist at $path\n";
+        return;
+    }
+    
+    echo "Displaying image...\n";
+    $cmd = "kitty +kitten icat " . escapeshellarg($path);
+    passthru($cmd);
+}
+
+// Checking if FFI is available
 if (!extension_loaded("ffi")) {
     die("FFI extension is not loaded. Please enable it in php.ini\n");
 }
@@ -27,22 +44,20 @@ if (!extension_loaded("ffi")) {
 // Get shared object extension according to the platform
 $ext = "";
 $os = PHP_OS_FAMILY;
-
 switch($os){
 case "Linux":
-	$ext = "so";
-		break;
+    $ext = "so";
+        break;
 case "Windows":
-	$ext = "dll";
-		break;
+    $ext = "dll";
+        break;
 default:
-	$ext = "dylib";
-		break;
+    $ext = "dylib";
+        break;
 }
 
-// Use absolute path for better reliability
+// Using absolute path for better reliability
 $lib_path = __DIR__ . "/lib/librust_image_converter.$ext";
-
 if (!file_exists($lib_path)) {
     die("Library file not found at: $lib_path\n");
 }
@@ -55,9 +70,6 @@ try {
 } catch (FFI\Exception $e) {
     die("Failed to load library: " . $e->getMessage() . "\n");
 }
-
-/*echo "Enter path to input image: \n";*/
-/*$input = trim(fgets(STDIN));*/
 
 $input = select_image_with_fzf();
 if (!$input) {
@@ -78,9 +90,6 @@ $extMap = [
     2 => ".webp",
 ];
 
-/*echo "Enter the output file name (no extension): ";*/
-/*$output_file_name = trim(fgets(STDIN));*/
-
 if (!array_key_exists($format_code, $extMap)) {
     echo "Invalid details provided\n";
     exit(1);
@@ -100,21 +109,28 @@ if ($location_choice === "1") {
     $output = $inputDir . DIRECTORY_SEPARATOR . $inputBaseName . $targetExt;
 } else {
     $outputDir = __DIR__ . "/output/";
-    if (!is_dir($output_dir)) {
-        mkdir($output_dir, 0755, true);
+    if (!is_dir($outputDir)) {
+        mkdir($outputDir, 0755, true);
     }
     $output = $outputDir . DIRECTORY_SEPARATOR . $inputBaseName . $targetExt;
 }
 
-$output_dir = __DIR__ . "/output/";
-if (!is_dir($output_dir)) {
-    mkdir($output_dir, 0755, true);
-}
-
 $result = $ffi->convert_image($input, $output, $format_code);
-
 if ($result === 0) {
-    echo "Image conversion successful, image in output dir\n";
+    echo "Image conversion successful!\n";
+    echo "Output file: $output\n";
+    
+    // Verifying the output file exists and has content
+    if (file_exists($output)) {
+        $fileSize = filesize($output);
+        echo "File size: " . number_format($fileSize) . " bytes\n";
+        
+        // Displaying images
+        echo "Displaying image...\n";
+        display_image_in_kitty($output);
+    } else {
+        echo "Error: Output file was not created\n";
+    }
 } else {
     echo "Conversion failed with error code: $result\n";
 }
