@@ -1,5 +1,5 @@
 rustffi/target
 output/
 /lib/
-
-/vendor/
+app.phar
+image-converter
