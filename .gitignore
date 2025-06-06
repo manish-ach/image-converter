@@ -1,3 +1,5 @@
 rustffi/target
 output/
 /lib/
+
+/vendor/

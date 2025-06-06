@@ -416,6 +416,31 @@ function display_image_in_kitty(string $path): void {
 }
 
 /**
+ * Get library path - handles both phar and direct execution
+ */
+function get_library_path(): string {
+    // First, check if we're running from phar and have extracted library
+    $pharLibPath = getenv('RUST_LIB_PATH');
+    if ($pharLibPath && file_exists($pharLibPath)) {
+        return $pharLibPath;
+    }
+
+    // Check $_ENV as well (alternative way the bootstrap might set it)
+    if (isset($_ENV['RUST_LIB_PATH']) && file_exists($_ENV['RUST_LIB_PATH'])) {
+        return $_ENV['RUST_LIB_PATH'];
+    }
+
+    // Fallback to local lib directory (for direct execution)
+    $ext = match(PHP_OS_FAMILY) {
+        "Linux" => "so",
+        "Windows" => "dll",
+        default => "dylib"
+    };
+
+    return __DIR__ . "/lib/librust_image_converter.$ext";
+}
+
+/**
  * Main application logic
  */
 function main(): void {
@@ -431,14 +456,9 @@ function main(): void {
         exit(1);
     }
 
-    // Determine library extension
-    $ext = match(PHP_OS_FAMILY) {
-        "Linux" => "so",
-        "Windows" => "dll",
-        default => "dylib"
-    };
-
-    $lib_path = __DIR__ . "/lib/librust_image_converter.$ext";
+    // Get library path
+    $lib_path = get_library_path();
+    
     if (!file_exists($lib_path)) {
         display_error("Library file not found at: $lib_path");
         display_info("Run 'make' to build the Rust library");
@@ -451,9 +471,10 @@ function main(): void {
             "int convert_image(const char* input_path, const char* output_path, int format_code);",
             $lib_path
         );
-        display_success("Rust FFI library loaded successfully");
+        display_success("Rust FFI library loaded successfully from: " . basename($lib_path));
     } catch (FFI\Exception $e) {
         display_error("Failed to load library: " . $e->getMessage());
+        display_info("Library path attempted: $lib_path");
         exit(1);
     }
 
