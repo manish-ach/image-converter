@@ -529,6 +529,14 @@ The Rust FFI approach provides significant performance benefits:
 
 ---
 
+### short detail
+check out ![here](https://bit.ly/innosphere-image) `https://bit.ly/innosphere-image` for a short detail
+
+![bit ly_innosphere-image](https://github.com/user-attachments/assets/e7749ec6-2000-450e-8a67-4ad6e663fa00)
+
+
+---
+
 ## 👨‍💻 Author
 
 <div align="center">
