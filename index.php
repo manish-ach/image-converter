@@ -5,7 +5,7 @@
  * High-performance image processing powered by Rust
  * 
  * @author Manish Acharya
- * @version 2.1.0
+ * @version 2.1.2
  */
 
 // Configuration - Simple PHP array instead of .env
@@ -13,7 +13,7 @@ $config = [
     'output_dir' => './output/',
     'default_quality' => 85,
     'enable_kitty_preview' => true,
-    'fzf_options' => '--height 40% --reverse --border --preview "file {}"'
+    'fzf_options' => '--height 40% --reverse --border --preview "kitty +kitten icat --clear --transfer-mode=file --stdin=no --place=40x40@0x0 {}"'
 ];
 
 // ANSI Color codes for beautiful terminal output
@@ -205,19 +205,50 @@ function display_info(string $message): void {
 }
 
 /**
- * Select image using fzf with enhanced options
+ * Check if kitty image protocol is available
+ */
+function has_kitty_support(): bool {
+    // Check if kitty kitten command exists and works
+    $output = shell_exec('command -v kitty 2>/dev/null');
+    if (empty($output)) {
+        return false;
+    }
+    
+    // Check if terminal supports kitty protocol (patched st terminal should)
+    $term = getenv('TERM');
+    $termProgram = getenv('TERM_PROGRAM');
+    
+    // Support for patched st terminal or actual kitty
+    return $term === 'xterm-kitty' || $termProgram === 'kitty' || 
+           (strpos($term, 'st') !== false && shell_exec('kitty +kitten icat --help 2>/dev/null'));
+}
+
+/**
+ * Select image using fzf with enhanced options and image preview
  */
 function select_image_with_fzf(array $config): ?string {
-    display_info("Opening file selector...");
+    display_info("Opening file selector with image preview...");
 
     $homeDir = getenv('HOME');
     $escapedHome = escapeshellarg($homeDir);
-    $fzfOptions = $config['fzf_options'];
+    
+    // Determine preview command based on kitty support
+    $previewCmd = 'file {}'; // fallback
+    
+    if (has_kitty_support()) {
+        // Use kitty icat for image preview with proper sizing and clearing
+        $previewCmd = 'kitty +kitten icat --clear --transfer-mode=file --stdin=no --place=40x40@0x0 {} 2>/dev/null || file {}';
+        display_success("Kitty image protocol detected - enabling image previews");
+    } else {
+        display_info("Using file info preview (kitty protocol not available)");
+    }
+    
+    $fzfOptions = "--height 60% --reverse --border --preview '$previewCmd' --preview-window=right:50%";
 
     $cmd = "find $escapedHome "
          . "-path " . escapeshellarg("$homeDir/Library") . " -prune -o "
          . "-path " . escapeshellarg("$homeDir/.*") . " -prune -o "
-         . "-type f \\( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \\) -print | fzf $fzfOptions --prompt='🖼️  Select Image: '";
+         . "-type f \\( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' -o -iname '*.gif' -o -iname '*.bmp' \\) -print 2>/dev/null | fzf $fzfOptions --prompt='🖼️  Select Image: '";
 
     $selected = shell_exec($cmd);
     if ($selected === null) {
@@ -245,6 +276,8 @@ function display_image_info(string $path, string $label = "Image Info"): void {
         'image/jpeg' => '📸 JPEG',
         'image/png' => '🖼️ PNG',
         'image/webp' => '🌐 WEBP',
+        'image/gif' => '🎬 GIF',
+        'image/bmp' => '🖌️ BMP',
     ];
 
     $format = $formatMap[$mime] ?? '❓ Unknown';
@@ -401,18 +434,12 @@ function display_location_options(string $inputDir, array $config): string {
 }
 
 /**
- * Display image in Kitty terminal
+ * Display image in Kitty terminal (removed since not needed)
  */
 function display_image_in_kitty(string $path): void {
-    if (!file_exists($path)) {
-        display_error("Output file does not exist at $path");
-        return;
-    }
-
-    display_info("Displaying image in terminal...");
-    $cmd = "kitty +kitten icat " . escapeshellarg($path);
-    passthru($cmd);
-    echo "\n";
+    // This function is kept for compatibility but disabled
+    // since you mentioned the end preview is not necessary
+    return;
 }
 
 /**
@@ -547,11 +574,6 @@ function main(): void {
             ], Colors::GREEN);
 
             display_image_info($output, "🎉 Output Image");
-
-            // Display image if Kitty is available and enabled
-            if ($config['enable_kitty_preview'] && getenv('TERM') === 'xterm-kitty') {
-                display_image_in_kitty($output);
-            }
 
         } else {
             display_error("Output file was not created");
